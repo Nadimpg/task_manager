@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../style/style.dart';
 
@@ -10,6 +13,14 @@ class ProfileUpdateScreen extends StatefulWidget {
 }
 
 class _ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
+  XFile? image;
+  final ImagePicker _picker=ImagePicker();
+   camaraImage()async{
+   image=await _picker.pickImage(source: ImageSource.camera);
+   setState(() {
+   });
+}
+
   bool Loading = false;
   @override
   Widget build(BuildContext context) {
@@ -29,11 +40,21 @@ class _ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            ElevatedButton(onPressed: (){
+                              camaraImage();
+                            }, child: Icon(Icons.camera)),
+                            Container(
+                              child:  image == null ? Text('no data') : Image.file(File(image!.path)),
+                              height: 100,
+                            ),
+
                             Text("Updated Profile",
                                 style: Head1Text(colorDarkBlue)),
                             const SizedBox(height: 20),
                             InkWell(
-                              onTap: (){},
+                              onTap: (){
+                               camaraImage();
+                              },
                               child: Container(
                                 width: 330,
                                 height: 60,
@@ -51,7 +72,8 @@ class _ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
                                         ),
 
                                         child: Center(child: Text('Photo',style: TextStyle(color: Colors.white,fontWeight: FontWeight.w600),)),
-                                      )
+                                      ),
+                                      Text(image?.name ?? ''),
                                   ],
                                 ),
                               ),
@@ -76,6 +98,14 @@ class _ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
                             TextFormField(
                                 decoration: AppInputDecoration("Password"),
                                 onChanged: (Textvalue) {}),
+                            const SizedBox(height: 20),
+                            Container(child: ElevatedButton(
+                              style: AppButtonStyle(),
+                              child: SuccessButtonChild('Update'),
+                              onPressed: (){
+
+                              },
+                            ),)
 
                           ],
                         ),
