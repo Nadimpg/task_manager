@@ -15,30 +15,38 @@ class NewTaskScreen extends StatefulWidget {
 }
 
 class _NewTaskScreenState extends State<NewTaskScreen> {
+  NewTaskModel? _newTaskModel;
+  Future<void> getNewTaskFromApi() async {
+    final response = await NetworkRequest().getRequest(Urls.newTask);
 
-  Future<void> getNewTaskFromApi()async{
-        final response=await NetworkRequest().getRequest(Urls.newTask);
-        NewTaskModel _newTaskModel;
-        if(response['status']=='success'){
-          _newTaskModel=NewTaskModel.fromJson(response);
-          setState(() {
+    if (response['status'] == 'success') {
+      _newTaskModel = NewTaskModel.fromJson(response);
+      setState(() {});
+    }
+  }
 
-          });
-        }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+
+    });
+    getNewTaskFromApi();
   }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-          floatingActionButton: FloatingActionButton(
-            backgroundColor: Colors.green,
-            onPressed: (){
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (_) => const AddNewTaskScreen()));
-            },
-          child: const Icon(Icons.add),
-          ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.green,
+        onPressed: () {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (_) => const AddNewTaskScreen()));
+        },
+        child: const Icon(Icons.add),
+      ),
       appBar: AppBar(
         titleSpacing: 0,
         backgroundColor: Colors.green,
@@ -56,61 +64,85 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
           subtitle: const Text('nadimhasan@gmail.com'),
         ),
       ),
-          body: Column(
+      body: Column(
+        children: [
+          Row(
             children: [
-              const Row(
-                children: [
-                  Card(
-                    color: Colors.white,
-                    elevation: 5,
-                    child: Padding(padding: EdgeInsets.all(20),
-                    child: Column(
-                      children: [
-                        Text('231q',style: TextStyle(fontSize: 24,),),
-                        Text('New Task')
-                      ],
-                    ),
-                    ),
-                  ),
-                  Card(
-                    color: Colors.white,
-                    elevation: 5,
-                    child: Padding(padding: EdgeInsets.all(20),
-                      child: Column(
-                        children: [
-                          Text('231q',style: TextStyle(fontSize: 24,),),
-                          Text('New Task')
-                        ],
+              Card(
+                color: Colors.white,
+                elevation: 5,
+                child: Padding(
+                  padding: EdgeInsets.all(20),
+                  child: Column(
+                    children: [
+                      Text(
+                        '231q',
+                        style: TextStyle(
+                          fontSize: 24,
+                        ),
                       ),
-                    ),
+                      Text('New Task')
+                    ],
                   ),
-                  Card(
-                    color: Colors.white,
-                    elevation: 5,
-                    child: Padding(padding: EdgeInsets.all(20),
-                      child: Column(
-                        children: [
-                          Text('231q',style: TextStyle(fontSize: 24,),),
-                          Text('New Task')
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
+                ),
               ),
-              const SizedBox(height: 16,),
-
-              taskwidgets(title: 'New Task', description: 'Lorem Ipsum', date: '29-04-1999', type: 'new', oneditTap: (){}, ondeleteTap: (){}),
-              taskwidgets(title: 'New Task', description: 'Lorem Ipsum', date: '29-04-1999', type: 'new', oneditTap: (){}, ondeleteTap: (){}),
-              ListView.builder(
-
-                  itemBuilder: (context,index){
-                taskwidgets(title: 'New Task', description: 'Lorem Ipsum', date: '29-04-1999', type: 'new', oneditTap: (){}, ondeleteTap: (){});
-              })
+              Card(
+                color: Colors.white,
+                elevation: 5,
+                child: Padding(
+                  padding: EdgeInsets.all(20),
+                  child: Column(
+                    children: [
+                      Text(
+                        '231q',
+                        style: TextStyle(
+                          fontSize: 24,
+                        ),
+                      ),
+                      Text('New Task')
+                    ],
+                  ),
+                ),
+              ),
+              Card(
+                color: Colors.white,
+                elevation: 5,
+                child: Padding(
+                  padding: EdgeInsets.all(20),
+                  child: Column(
+                    children: [
+                      Text(
+                        '231q',
+                        style: TextStyle(
+                          fontSize: 24,
+                        ),
+                      ),
+                      Text('New Task')
+                    ],
+                  ),
+                ),
+              ),
             ],
           ),
+          const SizedBox(
+            height: 16,
+          ),
+          _newTaskModel==null ? Expanded(child: Center(child: CircularProgressIndicator(),)) :  Expanded(
+            child: ListView.builder(
+                itemCount: _newTaskModel?.data?.length ?? 0,
+                itemBuilder: (context, index) {
+                  final task=_newTaskModel!.data![index];
+                  return taskwidgets(
+                      title: task.title ?? '',
+                      description: task.description ?? '',
+                      date: task.createdDate ?? '',
+                      type: 'new',
+                      oneditTap: () {},
+                      ondeleteTap: () {});
+                }),
+          )
+        ],
+      ),
     ));
   }
 }
-
-
